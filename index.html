@@ -6,200 +6,155 @@
 <title>Portal Fiscal · Leire Roldán</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --bg: #F7F6F3;
-  --surface: #FFFFFF;
-  --border: #E8E6E1;
-  --border-soft: #F0EEE9;
-  --text: #1A1916;
-  --text-2: #6B6860;
-  --text-3: #9E9C97;
-  --accent: #2D6A4F;
-  --accent-light: #E8F5EE;
-  --accent-mid: #52B788;
-  --danger: #C1121F;
-  --danger-light: #FFF0F0;
-  --warn: #E76F51;
-  --warn-light: #FFF3EE;
-  --blue: #1D6FA4;
-  --blue-light: #EBF4FB;
-  --purple: #5C4DB1;
-  --purple-light: #F0EEFF;
-  --radius: 10px;
-  --radius-lg: 14px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --bg: #F7F6F3; --surface: #FFFFFF; --border: #E8E6E1; --border-soft: #F0EEE9;
+  --text: #1A1916; --text-2: #6B6860; --text-3: #9E9C97;
+  --accent: #2D6A4F; --accent-light: #E8F5EE; --accent-mid: #52B788;
+  --danger: #C1121F; --danger-light: #FFF0F0;
+  --blue: #1D6FA4; --blue-light: #EBF4FB;
+  --purple: #5C4DB1; --purple-light: #F0EEFF;
+  --radius: 10px; --radius-lg: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-/* ── AUTH ── */
-#auth-screen {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--bg);
-}
-.auth-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
-  padding: 40px; width: 380px; box-shadow: var(--shadow-md);
-}
+/* AUTH */
+#auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; width: 380px; box-shadow: var(--shadow-md); }
 .auth-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
 .auth-logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
-.auth-logo-text { font-size: 16px; font-weight: 600; color: var(--text); }
+.auth-logo-text { font-size: 16px; font-weight: 600; }
 .auth-logo-sub { font-size: 12px; color: var(--text-3); }
-.auth-tabs { display: flex; gap: 4px; background: var(--bg); border-radius: 8px; padding: 3px; margin-bottom: 24px; }
-.auth-tab { flex: 1; padding: 7px; text-align: center; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; color: var(--text-2); border: none; background: none; font-family: inherit; transition: all 0.15s; }
-.auth-tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
 .auth-field { margin-bottom: 14px; }
 .auth-field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; }
 .auth-field input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; background: var(--bg); color: var(--text); font-family: inherit; outline: none; transition: border 0.15s; }
 .auth-field input:focus { border-color: var(--accent); background: white; }
 .auth-btn { width: 100%; padding: 10px; background: var(--accent); color: white; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 4px; transition: all 0.15s; }
 .auth-btn:hover { background: #245840; }
-.auth-error { font-size: 12px; color: var(--danger); margin-top: 10px; text-align: center; display: none; }
+.auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-error { font-size: 12px; color: var(--danger); margin-top: 10px; text-align: center; display: none; background: var(--danger-light); padding: 8px; border-radius: 6px; }
+.auth-forgot { font-size: 12px; color: var(--text-3); text-align: center; margin-top: 12px; cursor: pointer; }
+.auth-forgot:hover { color: var(--accent); }
+.auth-success { font-size: 12px; color: var(--accent); margin-top: 10px; text-align: center; display: none; background: var(--accent-light); padding: 8px; border-radius: 6px; }
 
-/* ── LAYOUT ── */
+/* LAYOUT */
 #app { display: none; min-height: 100vh; }
-.sidebar {
-  position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
-  background: var(--surface); border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; z-index: 10; padding: 20px 0;
-}
+.sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10; padding: 20px 0; }
 .sidebar-logo { padding: 0 20px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-soft); margin-bottom: 12px; }
 .sidebar-logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; flex-shrink: 0; }
 .sidebar-logo-text { font-size: 14px; font-weight: 600; }
 .sidebar-logo-sub { font-size: 11px; color: var(--text-3); }
 .sidebar-section { padding: 6px 12px; font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 8px; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin: 1px 8px; border-radius: 7px; font-size: 13px; font-weight: 400; color: var(--text-2); cursor: pointer; transition: all 0.1s; border: none; background: none; font-family: inherit; width: calc(100% - 16px); text-align: left; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin: 1px 8px; border-radius: 7px; font-size: 13px; color: var(--text-2); cursor: pointer; border: none; background: none; font-family: inherit; width: calc(100% - 16px); text-align: left; transition: all 0.1s; }
 .nav-item:hover { background: var(--bg); color: var(--text); }
 .nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
 .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
 .sidebar-bottom { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--border-soft); }
-.user-pill { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 7px; cursor: pointer; transition: background 0.1s; }
-.user-pill:hover { background: var(--bg); }
+.user-pill { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 7px; }
 .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
 .user-name { font-size: 13px; font-weight: 500; }
 .user-role { font-size: 11px; color: var(--text-3); }
 .logout-btn { font-size: 12px; color: var(--text-3); background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 12px; }
 .logout-btn:hover { color: var(--danger); }
-
 .main { margin-left: 240px; padding: 28px 32px; min-height: 100vh; }
 .page { display: none; }
 .page.active { display: block; }
 
-/* ── PAGE HEADER ── */
+/* HEADERS & BUTTONS */
 .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
 .page-title { font-size: 22px; font-weight: 600; }
 .page-sub { font-size: 13px; color: var(--text-3); margin-top: 2px; }
-
-/* ── BUTTONS ── */
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border: none; transition: all 0.15s; }
 .btn-primary { background: var(--accent); color: white; }
 .btn-primary:hover { background: #245840; }
 .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
 .btn-secondary:hover { background: var(--bg); }
-.btn-danger { background: var(--danger-light); color: var(--danger); }
-.btn-danger:hover { background: #ffd6d6; }
 .btn-sm { padding: 5px 11px; font-size: 12px; }
 
-/* ── METRICS ── */
+/* METRICS */
 .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
 .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--shadow); }
 .metric-label { font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-.metric-value { font-size: 26px; font-weight: 600; color: var(--text); font-family: 'DM Mono', monospace; }
+.metric-value { font-size: 26px; font-weight: 600; font-family: 'DM Mono', monospace; }
 .metric-sub { font-size: 11px; color: var(--text-3); margin-top: 4px; }
-.metric-card.accent { border-color: var(--accent-mid); }
 .metric-card.accent .metric-value { color: var(--accent); }
 
-/* ── CARDS ── */
+/* CARDS */
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
-.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center; }
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 .card-title { font-size: 13px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; }
 .card-body { padding: 20px; }
-
-/* ── CHARTS ── */
 .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.chart-full { margin-bottom: 16px; }
-.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px; }
 .leg { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2); }
 .leg-sq { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
 
-/* ── FILTERS ── */
+/* FILTERS */
 .filters-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
-.filter-group { display: flex; align-items: center; gap: 4px; }
 .filter-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; }
-.pill { font-size: 12px; padding: 4px 11px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); cursor: pointer; transition: all 0.12s; white-space: nowrap; font-family: inherit; }
-.pill:hover { background: var(--bg); }
+.pill { font-size: 12px; padding: 4px 11px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); cursor: pointer; transition: all 0.12s; font-family: inherit; }
 .pill.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent-mid); font-weight: 500; }
 .sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
 
-/* ── TABLE ── */
+/* TABLE */
 .table-wrap { overflow: hidden; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow); }
 table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); }
 thead th { padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.4px; background: var(--bg); border-bottom: 1px solid var(--border); }
 tbody td { padding: 11px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--bg); }
-tbody tr:hover .row-actions { opacity: 1; }
-.row-actions { opacity: 0; display: flex; gap: 4px; transition: opacity 0.15s; }
+tbody tr:hover .row-act { opacity: 1; }
+.row-act { opacity: 0; transition: opacity 0.15s; }
 .action-btn { background: none; border: none; cursor: pointer; color: var(--text-3); font-size: 13px; padding: 3px 7px; border-radius: 5px; transition: all 0.12s; font-family: inherit; }
 .action-btn:hover { background: var(--bg); color: var(--text); }
 .action-btn.del:hover { background: var(--danger-light); color: var(--danger); }
 
-/* ── BADGES ── */
+/* BADGES */
 .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 6px; font-size: 12px; font-weight: 500; }
 .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 12px; font-weight: 500; }
 .status-activo { background: var(--accent-light); color: var(--accent); }
-.status-inactivo { background: var(--bg); color: var(--text-3); }
 .trim-chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
 .year-chip { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--blue-light); color: var(--blue); font-family: 'DM Mono', monospace; }
 .lrp-chip { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-3); background: var(--bg); padding: 2px 7px; border-radius: 5px; }
 .importe-pos { font-weight: 600; color: var(--accent); font-family: 'DM Mono', monospace; }
 .importe-neg { font-weight: 600; color: var(--danger); font-family: 'DM Mono', monospace; }
-
-/* ── CLIENTS TABLE ── */
 .client-row { display: flex; align-items: center; gap: 10px; }
 .client-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.25); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
 .modal-overlay.open { display: flex; }
 .modal { background: var(--surface); border-radius: var(--radius-lg); padding: 28px; width: 460px; max-width: 92vw; box-shadow: var(--shadow-md); border: 1px solid var(--border); }
 .modal h2 { font-size: 17px; font-weight: 600; margin-bottom: 20px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-.form-grid.cols-1 { grid-template-columns: 1fr; }
 .form-field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px; }
-.form-field input, .form-field select, .form-field textarea {
-  width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius);
-  font-size: 13px; background: var(--bg); color: var(--text); font-family: inherit; outline: none; transition: border 0.15s;
-}
+.form-field input, .form-field select { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; background: var(--bg); color: var(--text); font-family: inherit; outline: none; transition: border 0.15s; }
 .form-field input:focus, .form-field select:focus { border-color: var(--accent); background: white; }
 .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
 
-/* ── TOAST ── */
+/* TOAST */
 .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1A1916; color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 200; gap: 12px; align-items: center; box-shadow: var(--shadow-md); white-space: nowrap; }
 .toast.show { display: flex; }
 .toast-btn { padding: 5px 12px; border-radius: 6px; border: none; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 500; }
 .toast-ok { background: var(--danger); color: white; }
 .toast-cancel { background: rgba(255,255,255,0.15); color: white; }
 
-/* ── EMPTY ── */
-.empty { text-align: center; padding: 48px 24px; color: var(--text-3); }
-.empty-icon { font-size: 32px; margin-bottom: 10px; }
-.empty p { font-size: 13px; }
-
-/* ── PORTAL CLIENTE ── */
+/* PORTAL CLIENTE */
 .portal-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 5; }
-.portal-logo { display: flex; align-items: center; gap: 10px; }
 .portal-main { padding: 28px 32px; }
 .welcome-banner { background: linear-gradient(135deg, var(--accent) 0%, #1B4332 100%); color: white; border-radius: var(--radius-lg); padding: 24px 28px; margin-bottom: 24px; }
 .welcome-banner h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
 .welcome-banner p { font-size: 13px; opacity: 0.8; }
 
+/* LOADING */
+.loading { display: flex; align-items: center; justify-content: center; padding: 48px; color: var(--text-3); font-size: 14px; gap: 10px; }
+
 @media (max-width: 768px) {
-  .sidebar { width: 100%; height: auto; position: relative; }
+  .sidebar { display: none; }
   .main { margin-left: 0; padding: 16px; }
   .metrics-grid { grid-template-columns: 1fr 1fr; }
   .charts-grid { grid-template-columns: 1fr; }
@@ -209,9 +164,7 @@ tbody tr:hover .row-actions { opacity: 1; }
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════
-     AUTH SCREEN
-════════════════════════════════════════════════════════════ -->
+<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
@@ -221,10 +174,6 @@ tbody tr:hover .row-actions { opacity: 1; }
         <div class="auth-logo-sub">Portal Fiscal</div>
       </div>
     </div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchRole('admin')">Admin</button>
-      <button class="auth-tab" onclick="switchRole('cliente')">Cliente</button>
-    </div>
     <div class="auth-field">
       <label>Email</label>
       <input type="email" id="auth-email" placeholder="tu@email.com" />
@@ -233,20 +182,15 @@ tbody tr:hover .row-actions { opacity: 1; }
       <label>Contraseña</label>
       <input type="password" id="auth-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
     </div>
-    <button class="auth-btn" onclick="doLogin()">Entrar</button>
+    <button class="auth-btn" id="auth-btn" onclick="doLogin()">Entrar</button>
     <div class="auth-error" id="auth-error">Email o contraseña incorrectos</div>
-    <div style="margin-top:16px;font-size:11px;color:var(--text-3);text-align:center">
-      Demo: admin@leire.com / admin123 · cliente: surives@gmail.com / cliente123
-    </div>
+    <div class="auth-success" id="auth-success">Email enviado — revisa tu bandeja de entrada</div>
+    <div class="auth-forgot" onclick="resetPassword()">¿Olvidaste tu contraseña?</div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     APP
-════════════════════════════════════════════════════════════ -->
+<!-- APP ADMIN -->
 <div id="app">
-
-  <!-- SIDEBAR ADMIN -->
   <div class="sidebar" id="sidebar-admin">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">⚖️</div>
@@ -256,14 +200,14 @@ tbody tr:hover .row-actions { opacity: 1; }
       </div>
     </div>
     <div class="sidebar-section">Principal</div>
-    <button class="nav-item active" onclick="showPage('dashboard-admin', this)"><span class="nav-icon">📊</span> Dashboard</button>
-    <button class="nav-item" onclick="showPage('clientes', this)"><span class="nav-icon">👥</span> Clientes</button>
-    <button class="nav-item" onclick="showPage('impuestos-admin', this)"><span class="nav-icon">📋</span> Impuestos</button>
+    <button class="nav-item active" onclick="showPage('dashboard-admin',this)"><span class="nav-icon">📊</span>Dashboard</button>
+    <button class="nav-item" onclick="showPage('clientes',this)"><span class="nav-icon">👥</span>Clientes</button>
+    <button class="nav-item" onclick="showPage('impuestos-admin',this)"><span class="nav-icon">📋</span>Impuestos</button>
     <div class="sidebar-bottom">
       <div class="user-pill">
-        <div class="user-avatar">LR</div>
+        <div class="user-avatar" id="admin-avatar">LR</div>
         <div>
-          <div class="user-name">Leire Roldán</div>
+          <div class="user-name" id="admin-name">Admin</div>
           <div class="user-role">Administrador</div>
         </div>
       </div>
@@ -271,16 +215,11 @@ tbody tr:hover .row-actions { opacity: 1; }
     </div>
   </div>
 
-  <!-- MAIN ADMIN -->
   <div class="main" id="main-admin">
-
     <!-- DASHBOARD ADMIN -->
     <div class="page active" id="page-dashboard-admin">
       <div class="page-header">
-        <div>
-          <div class="page-title">Dashboard</div>
-          <div class="page-sub">Vista general de todos los clientes</div>
-        </div>
+        <div><div class="page-title">Dashboard</div><div class="page-sub">Vista general de todos los clientes</div></div>
         <button class="btn btn-primary" onclick="openModal('modal-impuesto')">+ Nuevo impuesto</button>
       </div>
       <div class="metrics-grid">
@@ -292,16 +231,16 @@ tbody tr:hover .row-actions { opacity: 1; }
       <div class="charts-grid">
         <div class="card">
           <div class="card-header"><span class="card-title">Por modelo</span><div class="legend" id="leg-modelo-a"></div></div>
-          <div class="card-body" style="padding-top:12px"><div style="position:relative;height:200px"><canvas id="chart-modelo-a" role="img" aria-label="Importe por modelo"></canvas></div></div>
+          <div class="card-body"><div style="position:relative;height:200px"><canvas id="chart-modelo-a" role="img" aria-label="Por modelo"></canvas></div></div>
         </div>
         <div class="card">
           <div class="card-header"><span class="card-title">Por trimestre</span><div class="legend" id="leg-trim-a"></div></div>
-          <div class="card-body" style="padding-top:12px"><div style="position:relative;height:200px"><canvas id="chart-trim-a" role="img" aria-label="Importe por trimestre"></canvas></div></div>
+          <div class="card-body"><div style="position:relative;height:200px"><canvas id="chart-trim-a" role="img" aria-label="Por trimestre"></canvas></div></div>
         </div>
       </div>
-      <div class="card chart-full">
+      <div class="card" style="margin-bottom:16px">
         <div class="card-header"><span class="card-title">Evolución trimestral</span><div class="legend" id="leg-evol-a"></div></div>
-        <div class="card-body" style="padding-top:12px"><div style="position:relative;height:220px"><canvas id="chart-evol-a" role="img" aria-label="Evolución por trimestre"></canvas></div></div>
+        <div class="card-body"><div style="position:relative;height:220px"><canvas id="chart-evol-a" role="img" aria-label="Evolución"></canvas></div></div>
       </div>
     </div>
 
@@ -313,7 +252,7 @@ tbody tr:hover .row-actions { opacity: 1; }
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Cliente</th><th>ID</th><th>Tipo</th><th>Estado</th><th>Email</th><th>Impuestos</th><th></th></tr></thead>
+          <thead><tr><th>Cliente</th><th>ID</th><th>Tipo</th><th>Estado</th><th>Impuestos</th><th></th></tr></thead>
           <tbody id="tbody-clientes"></tbody>
         </table>
       </div>
@@ -326,22 +265,18 @@ tbody tr:hover .row-actions { opacity: 1; }
         <button class="btn btn-primary" onclick="openModal('modal-impuesto')">+ Nuevo registro</button>
       </div>
       <div class="filters-bar">
-        <div class="filter-group">
-          <span class="filter-label">Año</span>
-          <button class="pill active" data-f="año" data-v="Todos" onclick="setFilter('año','Todos',this)">Todos</button>
-          <button class="pill" data-f="año" data-v="25" onclick="setFilter('año','25',this)">25</button>
-          <button class="pill" data-f="año" data-v="26" onclick="setFilter('año','26',this)">26</button>
-          <button class="pill" data-f="año" data-v="27" onclick="setFilter('año','27',this)">27</button>
-        </div>
+        <span class="filter-label">Año</span>
+        <button class="pill active" data-f="año" data-v="Todos" onclick="setFilter('año','Todos',this)">Todos</button>
+        <button class="pill" data-f="año" data-v="25" onclick="setFilter('año','25',this)">25</button>
+        <button class="pill" data-f="año" data-v="26" onclick="setFilter('año','26',this)">26</button>
+        <button class="pill" data-f="año" data-v="27" onclick="setFilter('año','27',this)">27</button>
         <div class="sep"></div>
-        <div class="filter-group">
-          <span class="filter-label">Trimestre</span>
-          <button class="pill active" data-f="trim" data-v="Todos" onclick="setFilter('trim','Todos',this)">Todos</button>
-          <button class="pill" data-f="trim" data-v="1°T" onclick="setFilter('trim','1°T',this)">1°T</button>
-          <button class="pill" data-f="trim" data-v="2°-T" onclick="setFilter('trim','2°-T',this)">2°-T</button>
-          <button class="pill" data-f="trim" data-v="3°-T" onclick="setFilter('trim','3°-T',this)">3°-T</button>
-          <button class="pill" data-f="trim" data-v="4°-T" onclick="setFilter('trim','4°-T',this)">4°-T</button>
-        </div>
+        <span class="filter-label">Trimestre</span>
+        <button class="pill active" data-f="trim" data-v="Todos" onclick="setFilter('trim','Todos',this)">Todos</button>
+        <button class="pill" data-f="trim" data-v="1T" onclick="setFilter('trim','1T',this)">1T</button>
+        <button class="pill" data-f="trim" data-v="2T" onclick="setFilter('trim','2T',this)">2T</button>
+        <button class="pill" data-f="trim" data-v="3T" onclick="setFilter('trim','3T',this)">3T</button>
+        <button class="pill" data-f="trim" data-v="4T" onclick="setFilter('trim','4T',this)">4T</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -350,13 +285,12 @@ tbody tr:hover .row-actions { opacity: 1; }
         </table>
       </div>
     </div>
-
-  </div><!-- /main-admin -->
+  </div>
 
   <!-- PORTAL CLIENTE -->
   <div id="portal-cliente" style="display:none; min-height:100vh; background:var(--bg)">
     <div class="portal-header">
-      <div class="portal-logo">
+      <div style="display:flex;align-items:center;gap:10px">
         <div class="sidebar-logo-icon" style="width:28px;height:28px;font-size:14px">⚖️</div>
         <div>
           <div style="font-size:14px;font-weight:600">Leire Roldán</div>
@@ -371,39 +305,42 @@ tbody tr:hover .row-actions { opacity: 1; }
     <div class="portal-main">
       <div class="welcome-banner">
         <h2>Bienvenido/a, <span id="portal-nombre">—</span></h2>
-        <p>Aquí puedes consultar el estado de tus impuestos y declaraciones fiscales</p>
+        <p>Consulta el estado de tus impuestos y declaraciones fiscales</p>
       </div>
       <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr)">
-        <div class="metric-card accent"><div class="metric-label">Total pagado</div><div class="metric-value" id="p-total">—</div></div>
+        <div class="metric-card accent"><div class="metric-label">Total importe</div><div class="metric-value" id="p-total">—</div></div>
         <div class="metric-card"><div class="metric-label">Registros</div><div class="metric-value" id="p-count">—</div></div>
         <div class="metric-card"><div class="metric-label">Modelos activos</div><div class="metric-value" id="p-modelos">—</div></div>
       </div>
-      <div class="charts-grid">
+      <div class="charts-grid" style="margin-bottom:16px">
         <div class="card">
           <div class="card-header"><span class="card-title">Por modelo</span><div class="legend" id="leg-modelo-c"></div></div>
-          <div class="card-body" style="padding-top:12px"><div style="position:relative;height:190px"><canvas id="chart-modelo-c" role="img" aria-label="Por modelo"></canvas></div></div>
+          <div class="card-body"><div style="position:relative;height:190px"><canvas id="chart-modelo-c" role="img" aria-label="Por modelo"></canvas></div></div>
         </div>
         <div class="card">
           <div class="card-header"><span class="card-title">Por trimestre</span><div class="legend" id="leg-trim-c"></div></div>
-          <div class="card-body" style="padding-top:12px"><div style="position:relative;height:190px"><canvas id="chart-trim-c" role="img" aria-label="Por trimestre"></canvas></div></div>
+          <div class="card-body"><div style="position:relative;height:190px"><canvas id="chart-trim-c" role="img" aria-label="Por trimestre"></canvas></div></div>
         </div>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">Mis impuestos</span></div>
-        <div class="table-wrap" style="border:none;border-radius:0;box-shadow:none">
-          <table>
-            <thead><tr><th>Modelo</th><th>Año</th><th>Trimestre</th><th style="text-align:right">Importe</th></tr></thead>
+        <div style="overflow:hidden">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;background:var(--surface)">
+            <thead><tr>
+              <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;background:var(--bg);border-bottom:1px solid var(--border)">Modelo</th>
+              <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;background:var(--bg);border-bottom:1px solid var(--border)">Año</th>
+              <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;background:var(--bg);border-bottom:1px solid var(--border)">Trimestre</th>
+              <th style="padding:10px 16px;text-align:right;font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;background:var(--bg);border-bottom:1px solid var(--border)">Importe</th>
+            </tr></thead>
             <tbody id="tbody-portal"></tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-</div><!-- /app -->
-
-<!-- ═══════════════════════════════════════════════════════════ MODALS -->
-<!-- Modal nuevo cliente -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modal-cliente">
   <div class="modal">
     <h2>Nuevo cliente</h2>
@@ -417,12 +354,11 @@ tbody tr:hover .row-actions { opacity: 1; }
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-cliente')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveCliente()">Guardar cliente</button>
+      <button class="btn btn-primary" onclick="saveCliente()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- Modal nuevo impuesto -->
 <div class="modal-overlay" id="modal-impuesto">
   <div class="modal">
     <h2>Nuevo registro de impuesto</h2>
@@ -437,7 +373,7 @@ tbody tr:hover .row-actions { opacity: 1; }
         <select id="ni-año"><option>25</option><option selected>26</option><option>27</option></select>
       </div>
       <div class="form-field"><label>Trimestre</label>
-        <select id="ni-trim"><option>1°T</option><option>2°-T</option><option>3°-T</option><option>4°-T</option></select>
+        <select id="ni-trim"><option>1T</option><option>2T</option><option>3T</option><option>4T</option></select>
       </div>
       <div class="form-field"><label>Importe (€)</label>
         <input type="number" id="ni-importe" placeholder="ej. 120 o -45"/>
@@ -448,30 +384,27 @@ tbody tr:hover .row-actions { opacity: 1; }
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-impuesto')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveImpuesto()">Guardar registro</button>
+      <button class="btn btn-primary" onclick="saveImpuesto()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">
-  <span id="toast-msg">¿Eliminar este registro?</span>
+  <span id="toast-msg">¿Eliminar?</span>
   <button class="toast-btn toast-ok" onclick="confirmDel()">Eliminar</button>
   <button class="toast-btn toast-cancel" onclick="cancelDel()">Cancelar</button>
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────
-const SB_URL = 'https://gbdxkajppapgiprrcblf.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiZHhrYWpwcGFwZ2lwcnJjYmxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwODM5ODgsImV4cCI6MjA5MTY1OTk4OH0.VfHHFRLPt0v9MRhyCESASqVEqGPcCpm9qO_FLD3P2sk';
+// ── SUPABASE INIT ─────────────────────────────────────────────────────
+const { createClient } = supabase;
+const sb = createClient(
+  'https://gbdxkajppapgiprrcblf.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiZHhrYWpwcGFwZ2lwcnJjYmxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwODM5ODgsImV4cCI6MjA5MTY1OTk4OH0.VfHHFRLPt0v9MRhyCESASqVEqGPcCpm9qO_FLD3P2sk'
+);
 
-// Credenciales demo (en producción esto va en Supabase Auth)
-const USERS = {
-  'admin@leire.com':      { password: 'admin123',   role: 'admin',   nombre: 'Leire Roldán' },
-  'surives@gmail.com':    { password: 'cliente123', role: 'cliente', lrp: 'LRP-54', nombre: 'Miguel Ángel Surives' },
-  'hello@studiolxd.com':  { password: 'cliente123', role: 'cliente', lrp: 'LRP-55', nombre: 'Studio LXS' },
-  'joxean@pruebas.com':   { password: 'cliente123', role: 'cliente', lrp: 'LRP-34', nombre: 'Joxean Pruebas' },
-};
+// Emails admin (añade aquí los admins)
+const ADMIN_EMAILS = ['admin@leireroldan.com', 'leire@leireroldan.com', 'tonilomabel@gmail.com'];
 
 const MC = {
   'Mod-111': { bg:'#DBEAFE', border:'#1D6FA4', text:'#1e40af', dot:'#1D6FA4' },
@@ -481,218 +414,214 @@ const MC = {
   'Mod-349': { bg:'#FCE7F3', border:'#9D174D', text:'#831843', dot:'#9D174D' },
 };
 const TC = {
-  '1°T':  { bg:'#DBEAFE', color:'#1D6FA4' },
-  '2°-T': { bg:'#FEF3C7', color:'#B45309' },
-  '3°-T': { bg:'#FCE7F3', color:'#9D174D' },
-  '4°-T': { bg:'#D1FAE5', color:'#2D6A4F' },
+  '1T': { bg:'#DBEAFE', color:'#1D6FA4' },
+  '2T': { bg:'#FEF3C7', color:'#B45309' },
+  '3T': { bg:'#FCE7F3', color:'#9D174D' },
+  '4T': { bg:'#D1FAE5', color:'#2D6A4F' },
 };
-const TRIMS = ['1°T','2°-T','3°-T','4°-T'];
+const TRIMS = ['1T','2T','3T','4T'];
 
-let currentRole = 'admin';
-let clientes = [];
-let impuestos = [];
-let filters = { año:'Todos', trim:'Todos' };
-let charts = {};
-let pendingDel = null;
-let currentUser = null;
-
-// ── SUPABASE HELPERS ──────────────────────────────────────────────────
-async function sbGet(table, params='') {
-  try {
-    const r = await fetch(`${SB_URL}/rest/v1/${table}?${params}`, {
-      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
-    });
-    if (!r.ok) return [];
-    return await r.json();
-  } catch { return []; }
-}
-
-async function sbPost(table, body) {
-  try {
-    const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
-      method: 'POST',
-      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-      body: JSON.stringify(body)
-    });
-    return r.ok ? await r.json() : null;
-  } catch { return null; }
-}
-
-async function sbDelete(table, id) {
-  try {
-    const r = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, {
-      method: 'DELETE',
-      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
-    });
-    return r.ok;
-  } catch { return false; }
-}
+let clientes = [], impuestos = [], filters = { año:'Todos', trim:'Todos' };
+let charts = {}, delType = null, delId = null;
 
 // ── AUTH ──────────────────────────────────────────────────────────────
-function switchRole(role) {
-  currentRole = role;
-  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&role==='admin')||(i===1&&role==='cliente')));
-}
-
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('auth-email').value.trim();
-  const pass = document.getElementById('auth-password').value;
-  const user = USERS[email];
-  if (!user || user.password !== pass) {
-    document.getElementById('auth-error').style.display = 'block';
+  const pass  = document.getElementById('auth-password').value;
+  const btn   = document.getElementById('auth-btn');
+  const err   = document.getElementById('auth-error');
+  const suc   = document.getElementById('auth-success');
+
+  err.style.display = 'none';
+  suc.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+  btn.disabled = false;
+  btn.textContent = 'Entrar';
+
+  if (error) {
+    err.style.display = 'block';
+    err.textContent = 'Email o contraseña incorrectos';
     return;
   }
-  currentUser = { ...user, email };
+
+  const user = data.user;
+  const isAdmin = ADMIN_EMAILS.includes(user.email);
+
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  if (user.role === 'admin') {
-    document.getElementById('sidebar-admin').style.display = 'flex';
-    document.getElementById('main-admin').style.display = 'block';
-    document.getElementById('portal-cliente').style.display = 'none';
-    loadAll();
+
+  if (isAdmin) {
+    showAdminPanel(user);
   } else {
-    document.getElementById('sidebar-admin').style.display = 'none';
-    document.getElementById('main-admin').style.display = 'none';
-    document.getElementById('portal-cliente').style.display = 'block';
-    loadPortalCliente(user);
+    showClientePanel(user);
   }
 }
 
-function doLogout() {
-  currentUser = null;
+async function resetPassword() {
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { alert('Introduce tu email primero'); return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href
+  });
+  const suc = document.getElementById('auth-success');
+  suc.style.display = 'block';
+  suc.textContent = error ? 'Error al enviar el email' : 'Email enviado — revisa tu bandeja de entrada';
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
   document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-email').value = '';
   document.getElementById('auth-password').value = '';
-  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('sidebar-admin').style.display = 'flex';
+  document.getElementById('main-admin').style.display = 'block';
+  document.getElementById('portal-cliente').style.display = 'none';
 }
 
-// ── CARGA DATOS ───────────────────────────────────────────────────────
+// Detectar sesión activa al cargar
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (session && document.getElementById('auth-screen').style.display !== 'none') {
+    const user = session.user;
+    const isAdmin = ADMIN_EMAILS.includes(user.email);
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    if (isAdmin) showAdminPanel(user);
+    else showClientePanel(user);
+  }
+});
+
+// ── ADMIN PANEL ───────────────────────────────────────────────────────
+async function showAdminPanel(user) {
+  document.getElementById('sidebar-admin').style.display = 'flex';
+  document.getElementById('main-admin').style.display = 'block';
+  document.getElementById('portal-cliente').style.display = 'none';
+  const initials = user.email.slice(0,2).toUpperCase();
+  document.getElementById('admin-avatar').textContent = initials;
+  document.getElementById('admin-name').textContent = user.email.split('@')[0];
+  await loadAll();
+}
+
 async function loadAll() {
-  const [c, i] = await Promise.all([
-    sbGet('clientes', 'order=nombre'),
-    sbGet('impuestos', 'order=created_at.desc&select=*,clientes(nombre,lrp_id)')
+  const [{ data: c }, { data: i }] = await Promise.all([
+    sb.from('clientes').select('*').order('nombre'),
+    sb.from('impuestos').select('*, clientes(nombre, lrp_id)').order('created_at', { ascending: false })
   ]);
-
-  // Fallback datos demo si Supabase no tiene tablas aún
-  clientes = c.length ? c : [
-    { id:'1', lrp_id:'LRP-55', nombre:'Studio LXS',         email:'hello@studiolxd.com', tipo:'PYME',     estado:'Activo' },
-    { id:'2', lrp_id:'LRP-54', nombre:'Miguel Ángel Surives',email:'surives@gmail.com',  tipo:'Autónomo', estado:'Activo' },
-    { id:'3', lrp_id:'LRP-34', nombre:'Joxean Pruebas',      email:'joxean@pruebas.com', tipo:'Autónomo', estado:'Activo' },
-  ];
-
-  impuestos = i.length ? i : [
-    { id:'1', cliente_id:'1', modelo:'Mod-303', año:'26', trimestre:'1°T',  importe:120, clientes:{nombre:'Studio LXS',       lrp_id:'LRP-55'} },
-    { id:'2', cliente_id:'1', modelo:'Mod-130', año:'26', trimestre:'1°T',  importe:125, clientes:{nombre:'Studio LXS',       lrp_id:'LRP-55'} },
-    { id:'3', cliente_id:'1', modelo:'Mod-111', año:'26', trimestre:'2°-T', importe:45,  clientes:{nombre:'Studio LXS',       lrp_id:'LRP-55'} },
-    { id:'4', cliente_id:'2', modelo:'Mod-303', año:'26', trimestre:'2°-T', importe:240, clientes:{nombre:'Miguel Ángel',     lrp_id:'LRP-54'} },
-    { id:'5', cliente_id:'3', modelo:'Mod-130', año:'26', trimestre:'1°T',  importe:65,  clientes:{nombre:'Joxean Pruebas',   lrp_id:'LRP-34'} },
-    { id:'6', cliente_id:'3', modelo:'Mod-111', año:'26', trimestre:'1°T',  importe:-20, clientes:{nombre:'Joxean Pruebas',   lrp_id:'LRP-34'} },
-  ];
-
+  clientes  = c || [];
+  impuestos = i || [];
   renderDashboardAdmin();
   renderClientes();
   renderImpuestosAdmin();
   populateClienteSelect();
 }
 
-async function loadPortalCliente(user) {
-  document.getElementById('portal-nombre').textContent = user.nombre;
-  document.getElementById('portal-lrp').textContent = user.lrp;
+// ── CLIENTE PANEL ─────────────────────────────────────────────────────
+async function showClientePanel(user) {
+  document.getElementById('sidebar-admin').style.display = 'none';
+  document.getElementById('main-admin').style.display = 'none';
+  document.getElementById('portal-cliente').style.display = 'block';
 
-  const i = await sbGet('impuestos', `select=*,clientes(nombre,lrp_id)&clientes.lrp_id=eq.${user.lrp}`);
-  let data = i.filter(r => r.clientes?.lrp_id === user.lrp);
-
-  // Fallback demo
-  if (!data.length) {
-    const demoAll = [
-      { id:'1', cliente_id:'1', modelo:'Mod-303', año:'26', trimestre:'1°T',  importe:120, clientes:{lrp_id:'LRP-55'} },
-      { id:'2', cliente_id:'1', modelo:'Mod-130', año:'26', trimestre:'1°T',  importe:125, clientes:{lrp_id:'LRP-55'} },
-      { id:'3', cliente_id:'1', modelo:'Mod-111', año:'26', trimestre:'2°-T', importe:45,  clientes:{lrp_id:'LRP-55'} },
-      { id:'4', cliente_id:'2', modelo:'Mod-303', año:'26', trimestre:'2°-T', importe:240, clientes:{lrp_id:'LRP-54'} },
-      { id:'5', cliente_id:'3', modelo:'Mod-130', año:'26', trimestre:'1°T',  importe:65,  clientes:{lrp_id:'LRP-34'} },
-      { id:'6', cliente_id:'3', modelo:'Mod-111', año:'26', trimestre:'1°T',  importe:-20, clientes:{lrp_id:'LRP-34'} },
-    ];
-    data = demoAll.filter(r => r.clientes.lrp_id === user.lrp);
+  // Buscar cliente por user_id o email
+  let { data: cliente } = await sb.from('clientes').select('*').eq('user_id', user.id).single();
+  if (!cliente) {
+    const { data } = await sb.from('clientes').select('*').eq('email', user.email).single();
+    cliente = data;
   }
 
-  const total = data.reduce((s,r)=>s+r.importe,0);
+  if (!cliente) {
+    document.getElementById('portal-nombre').textContent = user.email;
+    document.getElementById('portal-lrp').textContent = 'Sin asignar';
+    document.getElementById('tbody-portal').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-3)">No tienes registros aún</td></tr>';
+    return;
+  }
+
+  document.getElementById('portal-nombre').textContent = cliente.nombre;
+  document.getElementById('portal-lrp').textContent = cliente.lrp_id;
+
+  const { data: imp } = await sb.from('impuestos').select('*').eq('cliente_id', cliente.id).order('created_at', { ascending: false });
+  const data = imp || [];
+
+  const total = data.reduce((s,r)=>s+Number(r.importe),0);
   document.getElementById('p-total').textContent = Math.abs(total).toLocaleString('es-ES')+'€';
   document.getElementById('p-total').style.color = total < 0 ? 'var(--danger)' : 'var(--accent)';
   document.getElementById('p-count').textContent = data.length;
   document.getElementById('p-modelos').textContent = new Set(data.map(r=>r.modelo)).size;
 
-  const modelos = Object.keys(MC).filter(m => data.some(r=>r.modelo===m));
-  const byM = Object.fromEntries(modelos.map(m=>[m, data.filter(r=>r.modelo===m).reduce((s,r)=>s+r.importe,0)]));
+  const modelos = Object.keys(MC).filter(m=>data.some(r=>r.modelo===m));
+  const byM = Object.fromEntries(modelos.map(m=>[m,data.filter(r=>r.modelo===m).reduce((s,r)=>s+Number(r.importe),0)]));
   mkLegend('leg-modelo-c', modelos.map(m=>({l:m+' '+Math.round(byM[m])+'€', c:MC[m].border})));
   mkChart('chart-modelo-c','bar',modelos,[{data:modelos.map(m=>byM[m]),backgroundColor:modelos.map(m=>MC[m].bg),borderColor:modelos.map(m=>MC[m].border),borderWidth:1.5,borderRadius:5,label:'€'}]);
 
   const trims = TRIMS.filter(t=>data.some(r=>r.trimestre===t));
-  const byT = Object.fromEntries(trims.map(t=>[t,data.filter(r=>r.trimestre===t).reduce((s,r)=>s+r.importe,0)]));
+  const byT = Object.fromEntries(trims.map(t=>[t,data.filter(r=>r.trimestre===t).reduce((s,r)=>s+Number(r.importe),0)]));
   mkLegend('leg-trim-c', trims.map(t=>({l:t+' '+Math.round(byT[t])+'€', c:TC[t]?.color||'#888'})));
   mkChart('chart-trim-c','bar',trims,[{data:trims.map(t=>byT[t]),backgroundColor:trims.map(t=>TC[t]?.bg||'#eee'),borderColor:trims.map(t=>TC[t]?.color||'#888'),borderWidth:1.5,borderRadius:5,label:'€'}]);
 
-  document.getElementById('tbody-portal').innerHTML = data.map(r=>{
-    const m=MC[r.modelo]||{bg:'#eee',border:'#999',text:'#333',dot:'#999'};
-    const tc=TC[r.trimestre]||{bg:'#eee',color:'#555'};
-    const pos=r.importe>=0;
-    return '<tr>'
-      +'<td><span class="badge" style="background:'+m.bg+';color:'+m.text+';border:1px solid '+m.border+'"><span class="dot" style="background:'+m.dot+'"></span>'+r.modelo+'</span></td>'
-      +'<td><span class="year-chip">'+r.año+'</span></td>'
-      +'<td><span class="trim-chip" style="background:'+tc.bg+';color:'+tc.color+'">'+r.trimestre+'</span></td>'
-      +'<td style="text-align:right" class="'+(pos?'importe-pos':'importe-neg')+'">'+(pos?'':'-')+Math.abs(r.importe).toLocaleString('es-ES')+' €</td>'
-      +'</tr>';
-  }).join('');
+  document.getElementById('tbody-portal').innerHTML = data.length===0
+    ? '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-3)">Sin registros aún</td></tr>'
+    : data.map(r=>{
+        const m=MC[r.modelo]||{bg:'#eee',border:'#999',text:'#333',dot:'#999'};
+        const tc=TC[r.trimestre]||{bg:'#eee',color:'#555'};
+        const pos=Number(r.importe)>=0;
+        return '<tr style="border-bottom:1px solid var(--border-soft)">'
+          +'<td style="padding:11px 16px"><span class="badge" style="background:'+m.bg+';color:'+m.text+';border:1px solid '+m.border+'"><span class="dot" style="background:'+m.dot+'"></span>'+r.modelo+'</span></td>'
+          +'<td style="padding:11px 16px"><span class="year-chip">'+r.año+'</span></td>'
+          +'<td style="padding:11px 16px"><span class="trim-chip" style="background:'+tc.bg+';color:'+tc.color+'">'+r.trimestre+'</span></td>'
+          +'<td style="padding:11px 16px;text-align:right" class="'+(pos?'importe-pos':'importe-neg')+'">'+(pos?'':'-')+Math.abs(Number(r.importe)).toLocaleString('es-ES')+' €</td>'
+          +'</tr>';
+      }).join('');
 }
 
-// ── RENDERS ───────────────────────────────────────────────────────────
+// ── RENDERS ADMIN ─────────────────────────────────────────────────────
 function renderDashboardAdmin() {
   const activos = clientes.filter(c=>c.estado==='Activo').length;
-  const total = impuestos.reduce((s,r)=>s+Number(r.importe),0);
-  const pos = impuestos.filter(r=>r.importe>0).reduce((s,r)=>s+r.importe,0);
-  const neg = impuestos.filter(r=>r.importe<0).reduce((s,r)=>s+r.importe,0);
-  document.getElementById('m-clientes').textContent = activos;
+  const pos = impuestos.filter(r=>r.importe>0).reduce((s,r)=>s+Number(r.importe),0);
+  const neg = impuestos.filter(r=>r.importe<0).reduce((s,r)=>s+Number(r.importe),0);
+  document.getElementById('m-clientes').textContent  = activos;
   document.getElementById('m-registros').textContent = impuestos.length;
-  document.getElementById('m-pagar').textContent = pos.toLocaleString('es-ES')+'€';
-  document.getElementById('m-devolver').textContent = Math.abs(neg).toLocaleString('es-ES')+'€';
+  document.getElementById('m-pagar').textContent     = pos.toLocaleString('es-ES')+'€';
+  document.getElementById('m-devolver').textContent  = Math.abs(neg).toLocaleString('es-ES')+'€';
 
   const modelos = Object.keys(MC).filter(m=>impuestos.some(r=>r.modelo===m));
-  const byM = Object.fromEntries(modelos.map(m=>[m,impuestos.filter(r=>r.modelo===m).reduce((s,r)=>s+r.importe,0)]));
+  const byM = Object.fromEntries(modelos.map(m=>[m,impuestos.filter(r=>r.modelo===m).reduce((s,r)=>s+Number(r.importe),0)]));
   mkLegend('leg-modelo-a', modelos.map(m=>({l:m, c:MC[m].border})));
   mkChart('chart-modelo-a','bar',modelos,[{data:modelos.map(m=>byM[m]),backgroundColor:modelos.map(m=>MC[m].bg),borderColor:modelos.map(m=>MC[m].border),borderWidth:1.5,borderRadius:5,label:'€'}]);
 
   const trims = TRIMS.filter(t=>impuestos.some(r=>r.trimestre===t));
-  const byT = Object.fromEntries(trims.map(t=>[t,impuestos.filter(r=>r.trimestre===t).reduce((s,r)=>s+r.importe,0)]));
+  const byT = Object.fromEntries(trims.map(t=>[t,impuestos.filter(r=>r.trimestre===t).reduce((s,r)=>s+Number(r.importe),0)]));
   mkLegend('leg-trim-a', trims.map(t=>({l:t, c:TC[t]?.color||'#888'})));
   mkChart('chart-trim-a','bar',trims,[{data:trims.map(t=>byT[t]),backgroundColor:trims.map(t=>TC[t]?.bg||'#eee'),borderColor:trims.map(t=>TC[t]?.color||'#888'),borderWidth:1.5,borderRadius:5,label:'€'}]);
 
   const evolM = Object.keys(MC).filter(m=>impuestos.some(r=>r.modelo===m));
   mkLegend('leg-evol-a', evolM.map(m=>({l:m, c:MC[m].border})));
   mkChart('chart-evol-a','line',TRIMS,evolM.map(m=>({
-    label:m, data:TRIMS.map(t=>{const s=impuestos.filter(r=>r.modelo===m&&r.trimestre===t).reduce((a,r)=>a+r.importe,0);return s||null;}),
+    label:m, data:TRIMS.map(t=>{const s=impuestos.filter(r=>r.modelo===m&&r.trimestre===t).reduce((a,r)=>a+Number(r.importe),0);return s||null;}),
     borderColor:MC[m].border, backgroundColor:MC[m].bg, tension:0.35, pointRadius:5, pointBackgroundColor:MC[m].border, borderWidth:2, fill:false
   })));
 }
 
 function renderClientes() {
-  document.getElementById('sub-clientes').textContent = clientes.length + ' clientes registrados';
-  document.getElementById('tbody-clientes').innerHTML = clientes.map(c => {
+  document.getElementById('sub-clientes').textContent = clientes.length+' clientes registrados';
+  document.getElementById('tbody-clientes').innerHTML = clientes.map(c=>{
     const imp = impuestos.filter(i=>i.cliente_id===c.id).length;
-    const initials = c.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    const ini = c.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
     return '<tr>'
-      +'<td><div class="client-row"><div class="client-avatar">'+initials+'</div><div><div style="font-weight:500">'+c.nombre+'</div><div style="font-size:11px;color:var(--text-3)">'+c.email+'</div></div></div></td>'
+      +'<td><div class="client-row"><div class="client-avatar">'+ini+'</div><div><div style="font-weight:500">'+c.nombre+'</div><div style="font-size:11px;color:var(--text-3)">'+c.email+'</div></div></div></td>'
       +'<td><span class="lrp-chip">'+c.lrp_id+'</span></td>'
-      +'<td style="color:var(--text-2);font-size:12px">'+c.tipo+'</td>'
-      +'<td><span class="status-badge status-'+(c.estado||'Activo').toLowerCase()+'">● '+(c.estado||'Activo')+'</span></td>'
-      +'<td style="color:var(--text-2);font-size:12px">'+c.email+'</td>'
+      +'<td style="color:var(--text-2);font-size:12px">'+(c.tipo||'—')+'</td>'
+      +'<td><span class="status-badge status-activo">● '+(c.estado||'Activo')+'</span></td>'
       +'<td style="font-weight:500;font-family:\'DM Mono\',monospace">'+imp+'</td>'
-      +'<td><div class="row-actions"><button class="action-btn del" onclick="askDel(\'cliente\',\''+c.id+'\',\''+c.nombre+'\')">✕</button></div></td>'
+      +'<td><div class="row-act"><button class="action-btn del" onclick="askDel(\'cliente\',\''+c.id+'\',\''+c.nombre+'\')">✕</button></div></td>'
       +'</tr>';
-  }).join('');
+  }).join('') || '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-3)">Sin clientes</td></tr>';
 }
 
 function renderImpuestosAdmin() {
-  const rows = impuestos.filter(r =>
+  const rows = impuestos.filter(r=>
     (filters.año==='Todos'||r.año===filters.año) &&
     (filters.trim==='Todos'||r.trimestre===filters.trim)
   );
@@ -701,75 +630,65 @@ function renderImpuestosAdmin() {
     : rows.map(r=>{
         const m=MC[r.modelo]||{bg:'#eee',border:'#999',text:'#333',dot:'#999'};
         const tc=TC[r.trimestre]||{bg:'#eee',color:'#555'};
-        const pos=r.importe>=0;
-        const cn = r.clientes?.nombre || '—';
-        const lrp = r.clientes?.lrp_id || '';
+        const pos=Number(r.importe)>=0;
+        const cn=r.clientes?.nombre||'—';
+        const lrp=r.clientes?.lrp_id||'';
         return '<tr>'
           +'<td><span class="badge" style="background:'+m.bg+';color:'+m.text+';border:1px solid '+m.border+'"><span class="dot" style="background:'+m.dot+'"></span>'+r.modelo+'</span></td>'
-          +'<td><div style="font-size:13px;font-weight:500">'+cn+'</div><span class="lrp-chip" style="margin-top:2px">'+lrp+'</span></td>'
+          +'<td><div style="font-size:13px;font-weight:500">'+cn+'</div><span class="lrp-chip">'+lrp+'</span></td>'
           +'<td><span class="year-chip">'+r.año+'</span></td>'
           +'<td><span class="trim-chip" style="background:'+tc.bg+';color:'+tc.color+'">'+r.trimestre+'</span></td>'
-          +'<td style="text-align:right" class="'+(pos?'importe-pos':'importe-neg')+'">'+(pos?'':'-')+Math.abs(r.importe).toLocaleString('es-ES')+' €</td>'
-          +'<td><div class="row-actions"><button class="action-btn del" onclick="askDel(\'impuesto\',\''+r.id+'\',\''+r.modelo+'\')">✕</button></div></td>'
+          +'<td style="text-align:right" class="'+(pos?'importe-pos':'importe-neg')+'">'+(pos?'':'-')+Math.abs(Number(r.importe)).toLocaleString('es-ES')+' €</td>'
+          +'<td><div class="row-act"><button class="action-btn del" onclick="askDel(\'impuesto\',\''+r.id+'\',\''+r.modelo+'\')">✕</button></div></td>'
           +'</tr>';
       }).join('');
 }
 
 // ── SAVE ──────────────────────────────────────────────────────────────
 async function saveCliente() {
-  const nombre = document.getElementById('nc-nombre').value.trim();
-  const lrp = document.getElementById('nc-lrp').value.trim();
-  const email = document.getElementById('nc-email').value.trim();
-  const tipo = document.getElementById('nc-tipo').value;
-  if (!nombre||!lrp||!email) return;
-
-  const res = await sbPost('clientes', { lrp_id:lrp, nombre, email, tipo, estado:'Activo' });
-  if (res) {
-    clientes.push(res[0]);
-  } else {
-    clientes.push({ id: Date.now()+'', lrp_id:lrp, nombre, email, tipo, estado:'Activo' });
-  }
+  const nombre=document.getElementById('nc-nombre').value.trim();
+  const lrp=document.getElementById('nc-lrp').value.trim();
+  const email=document.getElementById('nc-email').value.trim();
+  const tipo=document.getElementById('nc-tipo').value;
+  if(!nombre||!lrp||!email) return;
+  const { data } = await sb.from('clientes').insert([{lrp_id:lrp,nombre,email,tipo,estado:'Activo'}]).select();
+  if(data) clientes.push(data[0]);
   closeModal('modal-cliente');
   renderClientes();
   populateClienteSelect();
+  document.getElementById('nc-nombre').value='';
+  document.getElementById('nc-lrp').value='';
+  document.getElementById('nc-email').value='';
 }
 
 async function saveImpuesto() {
-  const cid = document.getElementById('ni-cliente').value;
-  const importe = parseFloat(document.getElementById('ni-importe').value);
-  if (!cid||isNaN(importe)) return;
-  const cliente = clientes.find(c=>c.id===cid);
-  const rec = {
-    cliente_id: cid,
-    modelo: document.getElementById('ni-modelo').value,
-    año: document.getElementById('ni-año').value,
-    trimestre: document.getElementById('ni-trim').value,
-    importe,
-    notas: document.getElementById('ni-notas').value,
-  };
-  const res = await sbPost('impuestos', rec);
-  const full = { ...(res?res[0]:{ id:Date.now()+'', ...rec }), clientes:{ nombre:cliente?.nombre||'—', lrp_id:cliente?.lrp_id||'' } };
-  impuestos.unshift(full);
+  const cid=document.getElementById('ni-cliente').value;
+  const importe=parseFloat(document.getElementById('ni-importe').value);
+  if(!cid||isNaN(importe)) return;
+  const cliente=clientes.find(c=>c.id===cid);
+  const rec={ cliente_id:cid, modelo:document.getElementById('ni-modelo').value, año:document.getElementById('ni-año').value, trimestre:document.getElementById('ni-trim').value, importe, notas:document.getElementById('ni-notas').value };
+  const { data } = await sb.from('impuestos').insert([rec]).select('*, clientes(nombre, lrp_id)');
+  if(data) impuestos.unshift(data[0]);
   closeModal('modal-impuesto');
+  document.getElementById('ni-importe').value='';
   renderDashboardAdmin();
   renderImpuestosAdmin();
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────
-let delType=null, delId=null;
-function askDel(type, id, label) {
+function askDel(type,id,label) {
   delType=type; delId=id;
-  document.getElementById('toast-msg').textContent = '¿Eliminar '+label+'?';
+  document.getElementById('toast-msg').textContent='¿Eliminar '+label+'?';
   document.getElementById('toast').classList.add('show');
 }
 async function confirmDel() {
-  if (delType==='impuesto') {
-    await sbDelete('impuestos', delId);
-    impuestos = impuestos.filter(r=>r.id!==delId);
+  if(delType==='impuesto') {
+    await sb.from('impuestos').delete().eq('id',delId);
+    impuestos=impuestos.filter(r=>r.id!==delId);
     renderDashboardAdmin(); renderImpuestosAdmin();
-  } else if (delType==='cliente') {
-    await sbDelete('clientes', delId);
-    clientes = clientes.filter(c=>c.id!==delId);
+  } else {
+    await sb.from('clientes').delete().eq('id',delId);
+    clientes=clientes.filter(c=>c.id!==delId);
     renderClientes(); populateClienteSelect();
   }
   document.getElementById('toast').classList.remove('show');
@@ -778,30 +697,25 @@ async function confirmDel() {
 function cancelDel() { document.getElementById('toast').classList.remove('show'); delType=null; delId=null; }
 
 // ── CHARTS ────────────────────────────────────────────────────────────
-function mkChart(id, type, labels, datasets) {
-  if (charts[id]) charts[id].destroy();
-  const el = document.getElementById(id);
-  if (!el) return;
-  charts[id] = new Chart(el, {
-    type, data:{ labels, datasets },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:ctx=>' '+ctx.parsed.y.toLocaleString('es-ES')+' €' }}},
-      scales:{
-        x:{ grid:{ color:'rgba(0,0,0,0.03)' }, ticks:{ font:{size:11}, color:'#9E9C97', autoSkip:false }},
-        y:{ grid:{ color:'rgba(0,0,0,0.03)' }, ticks:{ font:{size:11}, color:'#9E9C97', callback:v=>v.toLocaleString('es-ES')+'€' }}
-      }
+function mkChart(id,type,labels,datasets) {
+  if(charts[id]) charts[id].destroy();
+  const el=document.getElementById(id); if(!el) return;
+  charts[id]=new Chart(el,{type,data:{labels,datasets},options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.parsed.y.toLocaleString('es-ES')+' €'}}},
+    scales:{
+      x:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{font:{size:11},color:'#9E9C97',autoSkip:false}},
+      y:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{font:{size:11},color:'#9E9C97',callback:v=>v.toLocaleString('es-ES')+'€'}}
     }
-  });
+  }});
 }
-function mkLegend(id, items) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.innerHTML = items.map(i=>'<span class="leg"><span class="leg-sq" style="background:'+i.c+'"></span>'+i.l+'</span>').join('');
+function mkLegend(id,items) {
+  const el=document.getElementById(id); if(!el) return;
+  el.innerHTML=items.map(i=>'<span class="leg"><span class="leg-sq" style="background:'+i.c+'"></span>'+i.l+'</span>').join('');
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────
-function showPage(id, btn) {
+function showPage(id,btn) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
@@ -809,28 +723,19 @@ function showPage(id, btn) {
 }
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function setFilter(key, val, btn) {
+function setFilter(key,val,btn) {
   filters[key]=val;
-  document.querySelectorAll('[data-f="'+key+'"]').forEach(b=>{
-    const a=b.dataset.v===val;
-    b.classList.toggle('active',a);
-    if(!a){b.style.background='';b.style.color='';b.style.borderColor='';}
-  });
+  document.querySelectorAll('[data-f="'+key+'"]').forEach(b=>{ b.classList.toggle('active',b.dataset.v===val); });
   renderImpuestosAdmin();
 }
 function populateClienteSelect() {
-  const sel = document.getElementById('ni-cliente');
-  sel.innerHTML = '<option value="">Selecciona un cliente...</option>'
-    + clientes.map(c=>'<option value="'+c.id+'">'+c.nombre+' ('+c.lrp_id+')</option>').join('');
+  document.getElementById('ni-cliente').innerHTML='<option value="">Selecciona un cliente...</option>'
+    +clientes.map(c=>'<option value="'+c.id+'">'+c.nombre+' ('+c.lrp_id+')</option>').join('');
 }
 
-// Cerrar modales al hacer click fuera
 document.querySelectorAll('.modal-overlay').forEach(o=>{
-  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); });
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
 });
-
-// Init
-document.getElementById('auth-email').focus();
 </script>
 </body>
 </html>
