@@ -8,11 +8,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#F7F6F3;--surface:#FFF;--border:#E8E6E1;--border-soft:#F0EEE9;--text:#1A1916;--text-2:#6B6860;--text-3:#9E9C97;--accent:#2D6A4F;--accent-light:#E8F5EE;--accent-mid:#52B788;--danger:#C1121F;--danger-light:#FFF0F0;--blue:#1D6FA4;--blue-light:#EBF4FB;--sidebar-w:240px;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.1);}
+:root{--bg:#F7F6F3;--surface:#FFF;--border:#E8E6E1;--border-soft:#F0EEE9;--text:#1A1916;--text-2:#6B6860;--text-3:#9E9C97;--accent:#2D6A4F;--accent-light:#E8F5EE;--accent-mid:#52B788;--danger:#C1121F;--danger-light:#FFF0F0;--warn:#D97706;--warn-light:#FFFBEB;--blue:#1D6FA4;--blue-light:#EBF4FB;--sidebar-w:240px;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.1);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-
-/* AUTH */
 #auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
 .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px 32px;width:100%;max-width:380px;box-shadow:var(--shadow-md);}
 .auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
@@ -30,8 +28,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .auth-success{font-size:13px;color:var(--accent);margin-top:10px;text-align:center;display:none;background:var(--accent-light);padding:9px;border-radius:6px;}
 .auth-forgot{font-size:12px;color:var(--text-3);text-align:center;margin-top:14px;cursor:pointer;}
 .auth-forgot:hover{color:var(--accent);}
-
-/* LAYOUT */
 #app{display:none;min-height:100vh;}
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform 0.25s ease;}
 .sidebar-logo{padding:18px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border-soft);}
@@ -60,8 +56,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .main{margin-left:var(--sidebar-w);padding:28px 32px;min-height:100vh;}
 .page{display:none;}
 .page.active{display:block;}
-
-/* HEADERS & BUTTONS */
 .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
 .page-title{font-size:22px;font-weight:600;}
 .page-sub{font-size:13px;color:var(--text-3);margin-top:2px;}
@@ -71,15 +65,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border);}
 .btn-secondary:hover{background:var(--bg);}
 .btn-sm{padding:6px 12px;font-size:12px;}
-
-/* METRICS */
 .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 .metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow);}
 .metric-label{font-size:11px;font-weight:500;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
 .metric-value{font-size:24px;font-weight:600;font-family:'DM Mono',monospace;}
 .metric-card.accent .metric-value{color:var(--accent);}
-
-/* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);}
 .card-header{padding:14px 18px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
 .card-title{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.5px;}
@@ -88,16 +78,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .legend{display:flex;flex-wrap:wrap;gap:8px;}
 .leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2);}
 .leg-sq{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
-
-/* FILTERS */
 .filters-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
 .filter-label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;margin-right:2px;}
 .pill{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;font-family:inherit;transition:all 0.12s;}
 .pill.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent-mid);font-weight:500;}
 .pill-sm{font-size:11px;padding:3px 9px;}
 .sep{width:1px;height:18px;background:var(--border);margin:0 2px;}
-
-/* TABLE */
 .table-wrap{overflow:hidden;border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow);}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);}
@@ -109,8 +95,6 @@ tbody tr:hover .row-act{opacity:1;}
 .row-act{opacity:0;transition:opacity 0.15s;}
 .action-btn{background:none;border:none;cursor:pointer;color:var(--text-3);font-size:13px;padding:4px 8px;border-radius:5px;font-family:inherit;}
 .action-btn.del:hover{background:var(--danger-light);color:var(--danger);}
-
-/* BADGES */
 .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;font-size:12px;font-weight:500;white-space:nowrap;}
 .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
 .status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:500;}
@@ -118,12 +102,16 @@ tbody tr:hover .row-act{opacity:1;}
 .trim-chip{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap;}
 .year-chip{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600;background:var(--blue-light);color:var(--blue);font-family:'DM Mono',monospace;}
 .lrp-chip{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);background:var(--bg);padding:2px 7px;border-radius:5px;white-space:nowrap;}
+.hacienda-chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;white-space:nowrap;}
+.hacienda-AEAT{background:#EEF2FF;color:#3730A3;}
+.hacienda-Gipuzkoa{background:#FEF3C7;color:#92400E;}
+.hacienda-Bizkaia{background:#FCE7F3;color:#9D174D;}
+.hacienda-Araba{background:#D1FAE5;color:#065F46;}
+.hacienda-Navarra{background:#EDE9FE;color:#5B21B6;}
 .importe-pos{font-weight:600;color:var(--accent);font-family:'DM Mono',monospace;}
 .importe-neg{font-weight:600;color:var(--danger);font-family:'DM Mono',monospace;}
 .client-row{display:flex;align-items:center;gap:10px;}
 .client-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;}
-
-/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:100;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:24px 20px 32px;width:100%;max-width:500px;box-shadow:var(--shadow-md);border:1px solid var(--border);max-height:90vh;overflow-y:auto;}
@@ -133,8 +121,6 @@ tbody tr:hover .row-act{opacity:1;}
 .form-field input,.form-field select{width:100%;padding:10px 11px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;}
 .form-field input:focus,.form-field select:focus{border-color:var(--accent);}
 .modal-footer{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
-
-/* TOAST */
 .toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1A1916;color:white;padding:12px 18px;border-radius:10px;font-size:13px;z-index:200;gap:12px;align-items:center;box-shadow:var(--shadow-md);white-space:nowrap;max-width:90vw;}
 .toast.show{display:flex;}
 .toast-btn{padding:5px 12px;border-radius:6px;border:none;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500;}
@@ -150,8 +136,19 @@ tbody tr:hover .row-act{opacity:1;}
 .welcome-banner h2{font-size:18px;font-weight:600;margin-bottom:4px;}
 .welcome-banner p{font-size:13px;opacity:0.8;}
 
-/* SELECTOR TRIMESTRE EN GRÁFICO */
-.chart-trim-selector{display:flex;gap:3px;flex-wrap:wrap;}
+/* VENCIMIENTOS */
+.vencimientos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:16px;}
+.venc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow);}
+.venc-card.urgente{border-color:#FCA5A5;background:#FFF5F5;}
+.venc-card.proximo{border-color:#FCD34D;background:var(--warn-light);}
+.venc-card.ok{border-color:var(--accent-mid);background:var(--accent-light);}
+.venc-modelo{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.venc-desc{font-size:11px;color:var(--text-3);margin-bottom:8px;}
+.venc-fecha{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;}
+.venc-dias{font-size:11px;margin-top:2px;}
+.venc-dias.urgente{color:var(--danger);}
+.venc-dias.proximo{color:var(--warn);}
+.venc-dias.ok{color:var(--accent);}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -169,11 +166,13 @@ tbody tr:hover .row-act{opacity:1;}
   .portal-main{padding:16px;}
   .col-actions{display:none;}
   .row-act{opacity:1;}
+  .vencimientos-grid{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:480px){
   .metrics-grid{grid-template-columns:1fr 1fr;}
   .metric-value{font-size:18px;}
   .pill{padding:4px 9px;font-size:11px;}
+  .vencimientos-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -213,6 +212,7 @@ tbody tr:hover .row-act{opacity:1;}
     <button class="nav-item active" onclick="showPage('dashboard-admin',this)"><span class="nav-icon">📊</span>Dashboard</button>
     <button class="nav-item" onclick="showPage('clientes',this)"><span class="nav-icon">👥</span>Clientes</button>
     <button class="nav-item" onclick="showPage('impuestos-admin',this)"><span class="nav-icon">📋</span>Impuestos</button>
+    <button class="nav-item" onclick="showPage('vencimientos-admin',this)"><span class="nav-icon">📅</span>Vencimientos</button>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="admin-avatar">LR</div>
@@ -249,7 +249,7 @@ tbody tr:hover .row-act{opacity:1;}
         <button class="btn btn-primary" onclick="openModal('modal-cliente')">+ Nuevo cliente</button>
       </div>
       <div class="table-wrap"><div class="table-scroll"><table>
-        <thead><tr><th>Cliente</th><th>ID</th><th>Tipo</th><th>Estado</th><th>Imp.</th><th class="col-actions"></th></tr></thead>
+        <thead><tr><th>Cliente</th><th>ID</th><th>Hacienda</th><th>Tipo</th><th>Estado</th><th>Imp.</th><th class="col-actions"></th></tr></thead>
         <tbody id="tbody-clientes"></tbody>
       </table></div></div>
     </div>
@@ -279,6 +279,27 @@ tbody tr:hover .row-act{opacity:1;}
         <tbody id="tbody-impuestos"></tbody>
       </table></div></div>
     </div>
+
+    <!-- VENCIMIENTOS ADMIN -->
+    <div class="page" id="page-vencimientos-admin">
+      <div class="page-header">
+        <div><div class="page-title">Vencimientos</div><div class="page-sub">Fechas límite por hacienda y trimestre</div></div>
+        <button class="btn btn-primary" onclick="openModal('modal-vencimiento')">+ Nuevo vencimiento</button>
+      </div>
+      <div class="filters-bar">
+        <span class="filter-label">Hacienda</span>
+        <button class="pill active" data-fv="Todas" onclick="setFilterVenc('Todas',this)">Todas</button>
+        <button class="pill" data-fv="AEAT" onclick="setFilterVenc('AEAT',this)">AEAT</button>
+        <button class="pill" data-fv="Gipuzkoa" onclick="setFilterVenc('Gipuzkoa',this)">Gipuzkoa</button>
+        <button class="pill" data-fv="Bizkaia" onclick="setFilterVenc('Bizkaia',this)">Bizkaia</button>
+        <button class="pill" data-fv="Araba" onclick="setFilterVenc('Araba',this)">Araba</button>
+        <button class="pill" data-fv="Navarra" onclick="setFilterVenc('Navarra',this)">Navarra</button>
+      </div>
+      <div class="table-wrap"><div class="table-scroll"><table>
+        <thead><tr><th>Hacienda</th><th>Modelo</th><th>Trimestre</th><th>Año</th><th>Fecha límite</th><th>Descripción</th><th class="col-actions"></th></tr></thead>
+        <tbody id="tbody-vencimientos"></tbody>
+      </table></div></div>
+    </div>
   </div>
 
   <!-- PORTAL CLIENTE -->
@@ -288,29 +309,39 @@ tbody tr:hover .row-act{opacity:1;}
         <div class="topbar-logo-icon">⚖️</div>
         <div><div style="font-size:14px;font-weight:600">Leire Roldán</div><div style="font-size:11px;color:var(--text-3)">Portal del Cliente</div></div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="lrp-chip" id="portal-lrp">—</span>
+        <span class="hacienda-chip" id="portal-hacienda-chip">—</span>
         <button class="btn btn-secondary btn-sm" onclick="doLogout()">Salir</button>
       </div>
     </div>
     <div class="portal-main">
       <div class="welcome-banner">
         <h2>Bienvenido/a, <span id="portal-nombre">—</span></h2>
-        <p>Consulta el estado de tus impuestos y declaraciones</p>
+        <p id="portal-hacienda-desc">Consulta el estado de tus impuestos y declaraciones</p>
       </div>
+
+      <!-- PRÓXIMOS VENCIMIENTOS -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title">📅 Próximos vencimientos</span></div>
+        <div class="card-body" style="padding:12px 16px">
+          <div class="vencimientos-grid" id="vencimientos-cliente"></div>
+        </div>
+      </div>
+
       <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
         <div class="metric-card accent"><div class="metric-label">Total</div><div class="metric-value" id="p-total">—</div></div>
         <div class="metric-card"><div class="metric-label">Registros</div><div class="metric-value" id="p-count">—</div></div>
         <div class="metric-card"><div class="metric-label">Modelos</div><div class="metric-value" id="p-modelos">—</div></div>
       </div>
+
       <div class="charts-grid" style="margin-bottom:14px">
-        <!-- GRÁFICO POR MODELO con selector de trimestre -->
         <div class="card">
           <div class="card-header">
             <span class="card-title">Por modelo</span>
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <div class="legend" id="leg-modelo-c"></div>
-              <div class="chart-trim-selector">
+              <div style="display:flex;gap:3px">
                 <button class="pill pill-sm active" data-ts="Todos" onclick="setTrimModelo('Todos',this)">Todos</button>
                 <button class="pill pill-sm" data-ts="1T" onclick="setTrimModelo('1T',this)">1T</button>
                 <button class="pill pill-sm" data-ts="2T" onclick="setTrimModelo('2T',this)">2T</button>
@@ -323,6 +354,7 @@ tbody tr:hover .row-act{opacity:1;}
         </div>
         <div class="card"><div class="card-header"><span class="card-title">Por trimestre</span><div class="legend" id="leg-trim-c"></div></div><div class="card-body"><div style="position:relative;height:180px"><canvas id="chart-trim-c" role="img" aria-label="Por trimestre"></canvas></div></div></div>
       </div>
+
       <div class="card">
         <div class="card-header"><span class="card-title">Mis impuestos</span></div>
         <div class="table-scroll"><table>
@@ -343,6 +375,15 @@ tbody tr:hover .row-act{opacity:1;}
       <div class="form-field"><label>LRP ID</label><input id="nc-lrp" placeholder="LRP-56" style="font-family:'DM Mono',monospace"/></div>
       <div class="form-field"><label>Email</label><input id="nc-email" type="email" placeholder="email@cliente.com"/></div>
       <div class="form-field"><label>Tipo</label><select id="nc-tipo"><option>Autónomo</option><option>PYME</option><option>Sociedad</option><option>Cooperativa</option></select></div>
+      <div class="form-field" style="grid-column:1/-1"><label>Hacienda</label>
+        <select id="nc-hacienda">
+          <option value="AEAT">AEAT (Estatal)</option>
+          <option value="Gipuzkoa">Gipuzkoa (Foral)</option>
+          <option value="Bizkaia">Bizkaia (Foral)</option>
+          <option value="Araba">Araba (Foral)</option>
+          <option value="Navarra">Navarra (Foral)</option>
+        </select>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-cliente')">Cancelar</button>
@@ -356,7 +397,7 @@ tbody tr:hover .row-act{opacity:1;}
     <h2>Nuevo impuesto</h2>
     <div class="form-grid">
       <div class="form-field" style="grid-column:1/-1"><label>Cliente</label><select id="ni-cliente"><option value="">Selecciona...</option></select></div>
-      <div class="form-field"><label>Modelo</label><select id="ni-modelo"><option>Mod-111</option><option>Mod-115</option><option>Mod-130</option><option>Mod-303</option><option>Mod-349</option></select></div>
+      <div class="form-field"><label>Modelo</label><select id="ni-modelo"><option>Mod-111</option><option>Mod-115</option><option>Mod-130</option><option>Mod-300</option><option>Mod-303</option><option>Mod-349</option></select></div>
       <div class="form-field"><label>Año</label><select id="ni-año"><option>25</option><option selected>26</option><option>27</option></select></div>
       <div class="form-field"><label>Trimestre</label><select id="ni-trim"><option>1T</option><option>2T</option><option>3T</option><option>4T</option></select></div>
       <div class="form-field"><label>Importe (€)</label><input type="number" id="ni-importe" placeholder="120 o -45" inputmode="decimal"/></div>
@@ -365,6 +406,26 @@ tbody tr:hover .row-act{opacity:1;}
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-impuesto')">Cancelar</button>
       <button class="btn btn-primary" onclick="saveImpuesto()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-vencimiento">
+  <div class="modal">
+    <h2>Nuevo vencimiento</h2>
+    <div class="form-grid">
+      <div class="form-field"><label>Hacienda</label>
+        <select id="nv-hacienda"><option>AEAT</option><option>Gipuzkoa</option><option>Bizkaia</option><option>Araba</option><option>Navarra</option></select>
+      </div>
+      <div class="form-field"><label>Modelo</label><input id="nv-modelo" placeholder="Ej. Mod-303"/></div>
+      <div class="form-field"><label>Trimestre</label><select id="nv-trim"><option>1T</option><option>2T</option><option>3T</option><option>4T</option><option>Anual</option></select></div>
+      <div class="form-field"><label>Año</label><select id="nv-año"><option>25</option><option selected>26</option><option>27</option></select></div>
+      <div class="form-field" style="grid-column:1/-1"><label>Fecha límite</label><input type="date" id="nv-fecha"/></div>
+      <div class="form-field" style="grid-column:1/-1"><label>Descripción</label><input id="nv-desc" placeholder="Ej. IVA 1T Gipuzkoa"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-vencimiento')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveVencimiento()">Guardar</button>
     </div>
   </div>
 </div>
@@ -387,6 +448,7 @@ const MC = {
   'Mod-111':{bg:'#DBEAFE',border:'#1D6FA4',text:'#1e40af',dot:'#1D6FA4'},
   'Mod-115':{bg:'#FEF3C7',border:'#B45309',text:'#92400e',dot:'#B45309'},
   'Mod-130':{bg:'#D1FAE5',border:'#2D6A4F',text:'#166534',dot:'#2D6A4F'},
+  'Mod-300':{bg:'#FEF3C7',border:'#D97706',text:'#92400e',dot:'#D97706'},
   'Mod-303':{bg:'#EDE9FE',border:'#5C4DB1',text:'#4c1d95',dot:'#5C4DB1'},
   'Mod-349':{bg:'#FCE7F3',border:'#9D174D',text:'#831843',dot:'#9D174D'}
 };
@@ -398,29 +460,20 @@ const TC = {
 };
 const TRIMS = ['1T','2T','3T','4T'];
 
-let clientes=[],impuestos=[],filters={año:'Todos',trim:'Todos'};
-let charts={},delType=null,delId=null;
-let clienteData=[],trimModelo='Todos';
+let clientes=[],impuestos=[],vencimientos=[],filters={año:'Todos',trim:'Todos'},filterVenc='Todas';
+let charts={},delType=null,delId=null,clienteData=[],trimModelo='Todos';
 
-// ── MOBILE ────────────────────────────────────────────────────────────
-function toggleSidebar(){
-  document.getElementById('sidebar-admin').classList.toggle('open');
-  document.getElementById('sidebar-overlay').classList.toggle('show');
-}
-function closeSidebar(){
-  document.getElementById('sidebar-admin').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('show');
-}
+function toggleSidebar(){document.getElementById('sidebar-admin').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar-admin').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('show');}
 
-// ── AUTH ──────────────────────────────────────────────────────────────
 async function doLogin(){
   const email=document.getElementById('auth-email').value.trim();
   const pass=document.getElementById('auth-password').value;
   const btn=document.getElementById('auth-btn');
   document.getElementById('auth-error').style.display='none';
-  btn.disabled=true; btn.textContent='Entrando...';
-  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
-  btn.disabled=false; btn.textContent='Entrar';
+  btn.disabled=true;btn.textContent='Entrando...';
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false;btn.textContent='Entrar';
   if(error){document.getElementById('auth-error').style.display='block';return;}
   iniciarApp(data.user);
 }
@@ -429,25 +482,22 @@ async function resetPassword(){
   const email=document.getElementById('auth-email').value.trim();
   if(!email){alert('Introduce tu email primero');return;}
   await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
-  const s=document.getElementById('auth-success');
-  s.style.display='block'; s.textContent='Email enviado — revisa tu bandeja';
+  const s=document.getElementById('auth-success');s.style.display='block';s.textContent='Email enviado — revisa tu bandeja';
 }
 
-async function doLogout(){ await sb.auth.signOut(); location.reload(); }
+async function doLogout(){await sb.auth.signOut();location.reload();}
 
 function iniciarApp(user){
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  if(ADMIN_EMAILS.includes(user.email)) showAdminPanel(user);
+  if(ADMIN_EMAILS.includes(user.email))showAdminPanel(user);
   else showClientePanel(user);
 }
 
 sb.auth.onAuthStateChange((_,session)=>{
-  if(session && document.getElementById('auth-screen').style.display!=='none')
-    iniciarApp(session.user);
+  if(session&&document.getElementById('auth-screen').style.display!=='none')iniciarApp(session.user);
 });
 
-// ── ADMIN ─────────────────────────────────────────────────────────────
 async function showAdminPanel(user){
   document.getElementById('topbar-admin').style.display='flex';
   document.getElementById('sidebar-admin').style.display='flex';
@@ -459,48 +509,61 @@ async function showAdminPanel(user){
 }
 
 async function loadAll(){
-  const [{data:c},{data:i}]=await Promise.all([
+  const [{data:c},{data:i},{data:v}]=await Promise.all([
     sb.from('clientes').select('*').order('nombre'),
-    sb.from('impuestos').select('*,clientes(nombre,lrp_id)').order('created_at',{ascending:false})
+    sb.from('impuestos').select('*,clientes(nombre,lrp_id)').order('created_at',{ascending:false}),
+    sb.from('vencimientos').select('*').order('fecha_limite')
   ]);
-  clientes=c||[]; impuestos=i||[];
-  renderDashboardAdmin(); renderClientes(); renderImpuestosAdmin(); populateClienteSelect();
+  clientes=c||[];impuestos=i||[];vencimientos=v||[];
+  renderDashboardAdmin();renderClientes();renderImpuestosAdmin();renderVencimientosAdmin();populateClienteSelect();
 }
 
-// ── CLIENTE ───────────────────────────────────────────────────────────
 async function showClientePanel(user){
   document.getElementById('topbar-admin').style.display='none';
   document.getElementById('sidebar-admin').style.display='none';
   document.getElementById('main-admin').style.display='none';
   document.getElementById('portal-cliente').style.display='block';
 
-  let {data:cl}=await sb.from('clientes').select('*').eq('user_id',user.id).single();
-  if(!cl){const {data}=await sb.from('clientes').select('*').eq('email',user.email).single();cl=data;}
+  let{data:cl}=await sb.from('clientes').select('*').eq('user_id',user.id).single();
+  if(!cl){const{data}=await sb.from('clientes').select('*').eq('email',user.email).single();cl=data;}
   if(!cl){document.getElementById('portal-nombre').textContent=user.email;return;}
 
   document.getElementById('portal-nombre').textContent=cl.nombre;
   document.getElementById('portal-lrp').textContent=cl.lrp_id;
 
-  const {data:imp}=await sb.from('impuestos').select('*').eq('cliente_id',cl.id).order('created_at',{ascending:false});
+  const hacienda=cl.hacienda||'AEAT';
+  const hChip=document.getElementById('portal-hacienda-chip');
+  hChip.textContent=hacienda;
+  hChip.className='hacienda-chip hacienda-'+hacienda;
+  document.getElementById('portal-hacienda-desc').textContent='Hacienda: '+hacienda+' · Consulta tus impuestos y próximos vencimientos';
+
+  // Cargar vencimientos y datos en paralelo
+  const [{data:imp},{data:venc}]=await Promise.all([
+    sb.from('impuestos').select('*').eq('cliente_id',cl.id).order('created_at',{ascending:false}),
+    sb.from('vencimientos').select('*').eq('hacienda',hacienda).order('fecha_limite')
+  ]);
   clienteData=imp||[];
   trimModelo='Todos';
 
+  // Métricas
   const total=clienteData.reduce((s,r)=>s+Number(r.importe),0);
   document.getElementById('p-total').textContent=Math.abs(total).toLocaleString('es-ES')+'€';
   document.getElementById('p-total').style.color=total<0?'var(--danger)':'var(--accent)';
   document.getElementById('p-count').textContent=clienteData.length;
   document.getElementById('p-modelos').textContent=new Set(clienteData.map(r=>r.modelo)).size;
 
-  // Resetear selector trimestre
+  // Vencimientos del cliente
+  renderVencimientosCliente(venc||[]);
+
+  // Gráficos
   document.querySelectorAll('[data-ts]').forEach(b=>b.classList.toggle('active',b.dataset.ts==='Todos'));
-
   renderGraficoModelo();
-
   const trims=TRIMS.filter(t=>clienteData.some(r=>r.trimestre===t));
   const byT=Object.fromEntries(trims.map(t=>[t,clienteData.filter(r=>r.trimestre===t).reduce((s,r)=>s+Number(r.importe),0)]));
   mkLegend('leg-trim-c',trims.map(t=>({l:t+' '+Math.round(byT[t])+'€',c:TC[t]?.color||'#888'})));
   mkChart('chart-trim-c','bar',trims,[{data:trims.map(t=>byT[t]),backgroundColor:trims.map(t=>TC[t]?.bg||'#eee'),borderColor:trims.map(t=>TC[t]?.color||'#888'),borderWidth:1.5,borderRadius:5,label:'€'}]);
 
+  // Tabla
   document.getElementById('tbody-portal').innerHTML=clienteData.length===0
     ?'<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-3)">Sin registros aún</td></tr>'
     :clienteData.map(r=>{
@@ -514,7 +577,35 @@ async function showClientePanel(user){
     }).join('');
 }
 
-// ── SELECTOR TRIMESTRE GRÁFICO MODELO ────────────────────────────────
+function renderVencimientosCliente(venc){
+  const hoy=new Date();
+  const el=document.getElementById('vencimientos-cliente');
+  if(!venc.length){el.innerHTML='<p style="color:var(--text-3);font-size:13px">Sin vencimientos configurados</p>';return;}
+
+  // Mostrar solo los próximos 90 días o los más cercanos
+  const futuros=venc
+    .map(v=>({...v,fecha:new Date(v.fecha_limite)}))
+    .filter(v=>v.fecha>=new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate()))
+    .slice(0,8);
+
+  if(!futuros.length){el.innerHTML='<p style="color:var(--text-3);font-size:13px">Sin vencimientos próximos</p>';return;}
+
+  el.innerHTML=futuros.map(v=>{
+    const diff=Math.ceil((v.fecha-hoy)/(1000*60*60*24));
+    let cls='ok',diasTxt='';
+    if(diff<=7){cls='urgente';diasTxt='⚠️ '+diff+' días';}
+    else if(diff<=30){cls='proximo';diasTxt=''+diff+' días';}
+    else{diasTxt=''+diff+' días';}
+    const tc=TC[v.trimestre]||{bg:'#eee',color:'#555'};
+    return '<div class="venc-card '+cls+'">'
+      +'<div class="venc-modelo">'+v.modelo+' · <span class="trim-chip" style="background:'+tc.bg+';color:'+tc.color+'">'+v.trimestre+'</span></div>'
+      +'<div class="venc-desc">'+(v.descripcion||'')+'</div>'
+      +'<div class="venc-fecha">'+v.fecha_limite+'</div>'
+      +'<div class="venc-dias '+cls+'">'+diasTxt+'</div>'
+      +'</div>';
+  }).join('');
+}
+
 function setTrimModelo(t,btn){
   trimModelo=t;
   document.querySelectorAll('[data-ts]').forEach(b=>b.classList.toggle('active',b.dataset.ts===t));
@@ -529,7 +620,6 @@ function renderGraficoModelo(){
   mkChart('chart-modelo-c','bar',modelos,[{data:modelos.map(m=>byM[m]),backgroundColor:modelos.map(m=>MC[m].bg),borderColor:modelos.map(m=>MC[m].border),borderWidth:1.5,borderRadius:5,label:'€'}]);
 }
 
-// ── RENDERS ADMIN ─────────────────────────────────────────────────────
 function renderDashboardAdmin(){
   const activos=clientes.filter(c=>c.estado==='Activo').length;
   const pos=impuestos.filter(r=>r.importe>0).reduce((s,r)=>s+Number(r.importe),0);
@@ -556,8 +646,15 @@ function renderClientes(){
   document.getElementById('tbody-clientes').innerHTML=clientes.map(c=>{
     const imp=impuestos.filter(i=>i.cliente_id===c.id).length;
     const ini=c.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-    return '<tr><td><div class="client-row"><div class="client-avatar">'+ini+'</div><div><div style="font-weight:500;font-size:13px">'+c.nombre+'</div><div style="font-size:11px;color:var(--text-3)">'+c.email+'</div></div></div></td><td><span class="lrp-chip">'+c.lrp_id+'</span></td><td style="color:var(--text-2);font-size:12px">'+(c.tipo||'—')+'</td><td><span class="status-badge status-activo">● '+(c.estado||'Activo')+'</span></td><td style="font-weight:500;font-family:\'DM Mono\',monospace;font-size:13px">'+imp+'</td><td class="col-actions"><div class="row-act"><button class="action-btn del" onclick="askDel(\'cliente\',\''+c.id+'\',\''+c.nombre+'\')">✕</button></div></td></tr>';
-  }).join('')||'<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-3)">Sin clientes</td></tr>';
+    const h=c.hacienda||'AEAT';
+    return '<tr><td><div class="client-row"><div class="client-avatar">'+ini+'</div><div><div style="font-weight:500;font-size:13px">'+c.nombre+'</div><div style="font-size:11px;color:var(--text-3)">'+c.email+'</div></div></div></td>'
+      +'<td><span class="lrp-chip">'+c.lrp_id+'</span></td>'
+      +'<td><span class="hacienda-chip hacienda-'+h+'">'+h+'</span></td>'
+      +'<td style="color:var(--text-2);font-size:12px">'+(c.tipo||'—')+'</td>'
+      +'<td><span class="status-badge status-activo">● '+(c.estado||'Activo')+'</span></td>'
+      +'<td style="font-weight:500;font-family:\'DM Mono\',monospace;font-size:13px">'+imp+'</td>'
+      +'<td class="col-actions"><div class="row-act"><button class="action-btn del" onclick="askDel(\'cliente\',\''+c.id+'\',\''+c.nombre+'\')">✕</button></div></td></tr>';
+  }).join('')||'<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-3)">Sin clientes</td></tr>';
 }
 
 function renderImpuestosAdmin(){
@@ -568,21 +665,38 @@ function renderImpuestosAdmin(){
         const m=MC[r.modelo]||{bg:'#eee',border:'#999',text:'#333',dot:'#999'};
         const tc=TC[r.trimestre]||{bg:'#eee',color:'#555'};
         const pos=Number(r.importe)>=0;
-        const cn=r.clientes?.nombre||'—'; const lrp=r.clientes?.lrp_id||'';
+        const cn=r.clientes?.nombre||'—';const lrp=r.clientes?.lrp_id||'';
         return '<tr><td><span class="badge" style="background:'+m.bg+';color:'+m.text+';border:1px solid '+m.border+'"><span class="dot" style="background:'+m.dot+'"></span>'+r.modelo+'</span></td><td><div style="font-size:13px;font-weight:500">'+cn+'</div><span class="lrp-chip">'+lrp+'</span></td><td><span class="year-chip">'+r.año+'</span></td><td><span class="trim-chip" style="background:'+tc.bg+';color:'+tc.color+'">'+r.trimestre+'</span></td><td style="text-align:right" class="'+(pos?'importe-pos':'importe-neg')+'">'+(pos?'':'-')+Math.abs(Number(r.importe)).toLocaleString('es-ES')+' €</td><td class="col-actions"><div class="row-act"><button class="action-btn del" onclick="askDel(\'impuesto\',\''+r.id+'\',\''+r.modelo+'\')">✕</button></div></td></tr>';
     }).join('');
 }
 
-// ── SAVE ──────────────────────────────────────────────────────────────
+function renderVencimientosAdmin(){
+  const rows=filterVenc==='Todas'?vencimientos:vencimientos.filter(v=>v.hacienda===filterVenc);
+  const hoy=new Date();
+  document.getElementById('tbody-vencimientos').innerHTML=rows.length===0
+    ?'<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-3)">Sin vencimientos</td></tr>'
+    :rows.map(v=>{
+        const diff=Math.ceil((new Date(v.fecha_limite)-hoy)/(1000*60*60*24));
+        const h=v.hacienda||'AEAT';
+        const tc=TC[v.trimestre]||{bg:'#eee',color:'#555'};
+        let diasHtml='';
+        if(diff<=7)diasHtml='<span style="color:var(--danger);font-size:11px;font-weight:600">⚠️ '+diff+'d</span>';
+        else if(diff<=30)diasHtml='<span style="color:var(--warn);font-size:11px">'+diff+'d</span>';
+        else diasHtml='<span style="color:var(--text-3);font-size:11px">'+diff+'d</span>';
+        return '<tr><td><span class="hacienda-chip hacienda-'+h+'">'+h+'</span></td><td style="font-weight:500">'+v.modelo+'</td><td><span class="trim-chip" style="background:'+tc.bg+';color:'+tc.color+'">'+v.trimestre+'</span></td><td><span class="year-chip">'+v.año+'</span></td><td style="font-family:\'DM Mono\',monospace;font-size:12px">'+v.fecha_limite+' '+diasHtml+'</td><td style="color:var(--text-2);font-size:12px">'+(v.descripcion||'—')+'</td><td class="col-actions"><div class="row-act"><button class="action-btn del" onclick="askDel(\'vencimiento\',\''+v.id+'\',\''+v.modelo+'\')">✕</button></div></td></tr>';
+    }).join('');
+}
+
 async function saveCliente(){
   const nombre=document.getElementById('nc-nombre').value.trim();
   const lrp=document.getElementById('nc-lrp').value.trim();
   const email=document.getElementById('nc-email').value.trim();
   const tipo=document.getElementById('nc-tipo').value;
+  const hacienda=document.getElementById('nc-hacienda').value;
   if(!nombre||!lrp||!email)return;
-  const{data}=await sb.from('clientes').insert([{lrp_id:lrp,nombre,email,tipo,estado:'Activo'}]).select();
+  const{data}=await sb.from('clientes').insert([{lrp_id:lrp,nombre,email,tipo,hacienda,estado:'Activo'}]).select();
   if(data)clientes.push(data[0]);
-  closeModal('modal-cliente'); renderClientes(); populateClienteSelect();
+  closeModal('modal-cliente');renderClientes();populateClienteSelect();
   ['nc-nombre','nc-lrp','nc-email'].forEach(id=>document.getElementById(id).value='');
 }
 
@@ -593,20 +707,34 @@ async function saveImpuesto(){
   const rec={cliente_id:cid,modelo:document.getElementById('ni-modelo').value,año:document.getElementById('ni-año').value,trimestre:document.getElementById('ni-trim').value,importe,notas:document.getElementById('ni-notas').value};
   const{data}=await sb.from('impuestos').insert([rec]).select('*,clientes(nombre,lrp_id)');
   if(data)impuestos.unshift(data[0]);
-  closeModal('modal-impuesto'); document.getElementById('ni-importe').value='';
-  renderDashboardAdmin(); renderImpuestosAdmin();
+  closeModal('modal-impuesto');document.getElementById('ni-importe').value='';
+  renderDashboardAdmin();renderImpuestosAdmin();
 }
 
-// ── DELETE ────────────────────────────────────────────────────────────
+async function saveVencimiento(){
+  const hacienda=document.getElementById('nv-hacienda').value;
+  const modelo=document.getElementById('nv-modelo').value.trim();
+  const trimestre=document.getElementById('nv-trim').value;
+  const año=document.getElementById('nv-año').value;
+  const fecha_limite=document.getElementById('nv-fecha').value;
+  const descripcion=document.getElementById('nv-desc').value;
+  if(!modelo||!fecha_limite)return;
+  const{data}=await sb.from('vencimientos').insert([{hacienda,modelo,trimestre,año,fecha_limite,descripcion}]).select();
+  if(data)vencimientos.push(data[0]);
+  vencimientos.sort((a,b)=>new Date(a.fecha_limite)-new Date(b.fecha_limite));
+  closeModal('modal-vencimiento');renderVencimientosAdmin();
+  ['nv-modelo','nv-fecha','nv-desc'].forEach(id=>document.getElementById(id).value='');
+}
+
 function askDel(type,id,label){delType=type;delId=id;document.getElementById('toast-msg').textContent='¿Eliminar '+label+'?';document.getElementById('toast').classList.add('show');}
 async function confirmDel(){
   if(delType==='impuesto'){await sb.from('impuestos').delete().eq('id',delId);impuestos=impuestos.filter(r=>r.id!==delId);renderDashboardAdmin();renderImpuestosAdmin();}
-  else{await sb.from('clientes').delete().eq('id',delId);clientes=clientes.filter(c=>c.id!==delId);renderClientes();populateClienteSelect();}
+  else if(delType==='cliente'){await sb.from('clientes').delete().eq('id',delId);clientes=clientes.filter(c=>c.id!==delId);renderClientes();populateClienteSelect();}
+  else if(delType==='vencimiento'){await sb.from('vencimientos').delete().eq('id',delId);vencimientos=vencimientos.filter(v=>v.id!==delId);renderVencimientosAdmin();}
   document.getElementById('toast').classList.remove('show');delType=null;delId=null;
 }
 function cancelDel(){document.getElementById('toast').classList.remove('show');delType=null;delId=null;}
 
-// ── CHARTS ────────────────────────────────────────────────────────────
 function mkChart(id,type,labels,datasets){
   if(charts[id])charts[id].destroy();
   const el=document.getElementById(id);if(!el)return;
@@ -614,17 +742,17 @@ function mkChart(id,type,labels,datasets){
 }
 function mkLegend(id,items){const el=document.getElementById(id);if(!el)return;el.innerHTML=items.map(i=>'<span class="leg"><span class="leg-sq" style="background:'+i.c+'"></span>'+i.l+'</span>').join('');}
 
-// ── HELPERS ───────────────────────────────────────────────────────────
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  btn.classList.add('active'); closeSidebar();
+  btn.classList.add('active');closeSidebar();
 }
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function setFilter(key,val,btn){filters[key]=val;document.querySelectorAll('[data-f="'+key+'"]').forEach(b=>b.classList.toggle('active',b.dataset.v===val));renderImpuestosAdmin();}
-function populateClienteSelect(){document.getElementById('ni-cliente').innerHTML='<option value="">Selecciona...</option>'+clientes.map(c=>'<option value="'+c.id+'">'+c.nombre+' ('+c.lrp_id+')</option>').join('');}
+function setFilterVenc(val,btn){filterVenc=val;document.querySelectorAll('[data-fv]').forEach(b=>b.classList.toggle('active',b.dataset.fv===val));renderVencimientosAdmin();}
+function populateClienteSelect(){document.getElementById('ni-cliente').innerHTML='<option value="">Selecciona...</option>'+clientes.map(c=>'<option value="'+c.id+'">'+c.nombre+' ('+c.lrp_id+') - '+( c.hacienda||'AEAT')+'</option>').join('');}
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 </script>
 </body>
